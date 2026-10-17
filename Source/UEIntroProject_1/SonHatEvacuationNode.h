@@ -13,6 +13,10 @@ class UEINTROPROJECT_1_API ASonHatEvacuationNode : public AActor
 public:
 	ASonHatEvacuationNode();
 
+	/** Optional player-facing building name. Empty uses the actor label/name. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Son Hat|Evacuation")
+	FText BuildingName;
+
 	/** Includes residents already at the hub. Negative values are treated as zero. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Son Hat|Evacuation", meta = (ClampMin = "0"))
 	int32 CivilianCount = 0;

@@ -111,6 +111,16 @@ bool ASonHatEvacuationManager::IsUsableLink(const ASonHatEvacuationLink* Link) c
 		&& RegisteredNodes.Contains(Link->NodeA) && RegisteredNodes.Contains(Link->NodeB);
 }
 
+bool ASonHatEvacuationManager::HasSafeRoute(ASonHatEvacuationNode* Node) const
+{
+	return IsValid(Node) && NodesWithSafeAccess.Contains(Node);
+}
+
+bool ASonHatEvacuationManager::OwnsLink(ASonHatEvacuationLink* Link) const
+{
+	return IsValid(Link) && Link->NetworkOwner.Get() == this && RegisteredLinks.Contains(Link);
+}
+
 ESonHatEvacuationActivationResult ASonHatEvacuationManager::TryActivateNearestLink(
 	AActor* Interactor, ASonHatEvacuationLink*& OutLink)
 {
@@ -180,6 +190,7 @@ ESonHatEvacuationActivationResult ASonHatEvacuationManager::TryActivateLink(
 
 void ASonHatEvacuationManager::EvaluateNetwork()
 {
+	NodesWithSafeAccess.Reset();
 	TSet<ASonHatEvacuationNode*> ValidNodes;
 	ASonHatEvacuationNode* Hub = nullptr;
 	int32 HubCount = 0;
@@ -217,6 +228,7 @@ void ASonHatEvacuationManager::EvaluateNetwork()
 	TArray<ASonHatEvacuationNode*> Queue;
 	Visited.Add(Hub);
 	Queue.Add(Hub);
+	NodesWithSafeAccess.Add(Hub);
 	int64 SafePopulation = 0;
 	for (int32 Index = 0; Index < Queue.Num(); ++Index)
 	{
@@ -230,6 +242,7 @@ void ASonHatEvacuationManager::EvaluateNetwork()
 				{
 					Visited.Add(Neighbor);
 					Queue.Add(Neighbor);
+					NodesWithSafeAccess.Add(Neighbor);
 				}
 			}
 		}

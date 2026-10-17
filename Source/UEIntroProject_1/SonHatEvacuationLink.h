@@ -18,6 +18,10 @@ class UEINTROPROJECT_1_API ASonHatEvacuationLink : public AActor
 public:
 	ASonHatEvacuationLink();
 
+	/** Optional player-facing terminal name. Empty uses its endpoint building names. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Son Hat|Evacuation")
+	FText ConnectionName;
+
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Son Hat|Evacuation")
 	TObjectPtr<ASonHatEvacuationNode> NodeA;
 

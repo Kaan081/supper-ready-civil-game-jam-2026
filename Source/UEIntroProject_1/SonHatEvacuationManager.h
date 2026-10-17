@@ -89,6 +89,14 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Son Hat|Evacuation")
 	int32 GetRemainingConnections() const { return FMath::Max(0, RoundActivationBudget - UsedActivations); }
 
+	/** Authoritative result of the last graph evaluation; frozen with the final round result. */
+	UFUNCTION(BlueprintPure, Category = "Son Hat|Evacuation")
+	bool HasSafeRoute(ASonHatEvacuationNode* Node) const;
+
+	/** Allows level integration to detect another manager claiming the same connection. */
+	UFUNCTION(BlueprintPure, Category = "Son Hat|Evacuation")
+	bool OwnsLink(ASonHatEvacuationLink* Link) const;
+
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Transient, Category = "Son Hat|State")
 	int32 EstimatedSafePopulation = 0;
 
@@ -131,6 +139,9 @@ private:
 
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<ASonHatEvacuationLink>> RegisteredLinks;
+
+	UPROPERTY(Transient)
+	TArray<TObjectPtr<ASonHatEvacuationNode>> NodesWithSafeAccess;
 
 	FTimerHandle PreparationUpdateTimer;
 	double PreparationDeadline = 0.0;
