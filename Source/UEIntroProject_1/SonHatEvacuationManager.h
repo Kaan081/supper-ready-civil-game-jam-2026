@@ -86,6 +86,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Son Hat|Evacuation")
 	float GetRemainingTime() const;
 
+	/** Extends the preparation deadline (e.g. while the player acknowledges a fall retry). */
+	void ExtendPreparationDeadline(float ExtraSeconds);
+
 	UFUNCTION(BlueprintPure, Category = "Son Hat|Evacuation")
 	int32 GetRemainingConnections() const { return FMath::Max(0, RoundActivationBudget - UsedActivations); }
 

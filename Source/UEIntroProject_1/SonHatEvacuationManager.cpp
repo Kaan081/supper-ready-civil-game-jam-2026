@@ -90,6 +90,12 @@ float ASonHatEvacuationManager::GetRemainingTime() const
 		? static_cast<float>(FMath::Max(0.0, PreparationDeadline - GetWorld()->GetTimeSeconds())) : 0.0f;
 }
 
+void ASonHatEvacuationManager::ExtendPreparationDeadline(float ExtraSeconds)
+{
+	if (!bHasStarted || bGameEnded || !GetWorld() || !FMath::IsFinite(ExtraSeconds) || ExtraSeconds <= 0.f) { return; }
+	PreparationDeadline += static_cast<double>(ExtraSeconds);
+}
+
 bool ASonHatEvacuationManager::CheckDeadline()
 {
 	if (bHasStarted && !bGameEnded && GetWorld() && GetWorld()->GetTimeSeconds() >= PreparationDeadline)
