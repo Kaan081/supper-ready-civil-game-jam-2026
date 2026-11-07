@@ -807,12 +807,18 @@ void UGrappleComponent::UpdateFallRecovery(float DeltaSeconds)
 		UpdateReelLoopAudio(false);
 		return;
 	}
-	AcknowledgeFallRetry();
+	PerformFallRecovery();
 }
 
 bool UGrappleComponent::AcknowledgeFallRetry()
 {
-	if (!bEnableFallRecovery || (bRequireFallRetryAcknowledgment && !bAwaitingFallRetry)) { return false; }
+	if (!bEnableFallRecovery || !bAwaitingFallRetry) { return false; }
+	return PerformFallRecovery();
+}
+
+bool UGrappleComponent::PerformFallRecovery()
+{
+	if (!bEnableFallRecovery) { return false; }
 	ACharacter* Character = GetOwningCharacter();
 	UCharacterMovementComponent* Movement = Character ? Character->GetCharacterMovement() : nullptr;
 	if (!Character || !Movement || !bHasLastSafeGround) { return false; }
