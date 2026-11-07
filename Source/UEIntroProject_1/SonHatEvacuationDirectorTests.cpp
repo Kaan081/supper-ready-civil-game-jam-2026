@@ -190,6 +190,28 @@ bool FSonHatDirectorRoundTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FSonHatNearestSkipsInvalidTest, "SonHat.Evacuation.Manager.NearestSkipsInvalidCandidate",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FSonHatNearestSkipsInvalidTest::RunTest(const FString& Parameters)
+{
+	FLevel Level;
+	Level.PlaceDirector();
+	ASonHatEvacuationManager* Manager = Level.Director->GetRoundManager();
+	if (!TestNotNull(TEXT("Manager exists"), Manager)) { return false; }
+	// Invalidate an already-registered near link after startup; a valid link is still in range.
+	Level.Links[0]->SetActorLocation(FVector(0, 0, 600));
+	Level.Links[1]->SetActorLocation(FVector(120, 0, 600));
+	Level.Pawn->SetActorLocation(FVector(0, 0, 600));
+	Level.Links[0]->NodeB = nullptr;
+	ASonHatEvacuationLink* Selected = nullptr;
+	TestEqual(TEXT("Nearest skips invalid candidate"), Manager->TryActivateNearestLink(Level.Pawn, Selected), EDirectorResult::Success);
+	TestTrue(TEXT("Nearest valid link selected"), Selected == Level.Links[1].Get());
+	TestTrue(TEXT("Valid link activated"), Level.Links[1]->IsActive());
+	TestEqual(TEXT("AlreadyActive still returned for an activated terminal"), Manager->TryActivateNearestLink(Level.Pawn, Selected), EDirectorResult::AlreadyActive);
+	TestEqual(TEXT("No extra charge spent"), Manager->GetRemainingConnections(), 2);
+	return true;
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FSonHatDirectorRiskTest, "SonHat.Evacuation.Director.UnsafeChoiceVisibilityAndRawE",
 	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 bool FSonHatDirectorRiskTest::RunTest(const FString& Parameters)

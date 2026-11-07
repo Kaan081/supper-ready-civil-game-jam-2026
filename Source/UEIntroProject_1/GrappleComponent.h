@@ -376,6 +376,7 @@ protected:
 	bool RefreshAnchorPoint(float DeltaSeconds);
 	void UpdateFallRecovery(float DeltaSeconds);
 	void UpdateLastSafeGround();
+	bool PerformFallRecovery();
 	void SaveAndOverrideAirControl(UCharacterMovementComponent* Movement);
 	void RestoreAirControl(bool bPreserveReleaseMomentum = false);
 	void UpdateReticle();

@@ -141,7 +141,8 @@ ESonHatEvacuationActivationResult ASonHatEvacuationManager::TryActivateNearestLi
 	double ActiveDistanceSquared = BestDistanceSquared;
 	for (ASonHatEvacuationLink* Link : RegisteredLinks)
 	{
-		if (!IsValid(Link) || Link->GetActorLocation().ContainsNaN()) { continue; }
+		// Skip foreign and invalid links before choosing the nearest candidate.
+		if (!OwnsLink(Link) || !IsUsableLink(Link) || Link->GetActorLocation().ContainsNaN()) { continue; }
 		const double DistanceSquared = FVector::DistSquared(Interactor->GetActorLocation(), Link->GetActorLocation());
 		if (Link->bActive)
 		{

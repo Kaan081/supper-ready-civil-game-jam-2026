@@ -543,6 +543,33 @@ bool FSonHatRelativeRecoveryTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FSonHatFallRetryGuardTest, "SonHat.Grapple.Recovery.AcknowledgmentGuardAndAutoRecovery",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FSonHatFallRetryGuardTest::RunTest(const FString& Parameters)
+{
+	using namespace SonHatGrappleTests;
+	FGrappleTestWorld Scene;
+	Scene.AddBox(FVector(0, 0, -5000), FVector(500, 500, 10));
+	auto* Movement = Scene.Character->GetCharacterMovement();
+	const FVector Standing(0, 0, -4990 + Scene.Character->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + 2);
+	Scene.Grapple->bRequireFallRetryAcknowledgment = false;
+	Scene.Character->SetActorLocation(Standing);
+	Movement->SetMovementMode(MOVE_Walking);
+	Movement->FindFloor(Standing, Movement->CurrentFloor, false);
+	if (!TestTrue(TEXT("Supported checkpoint exists"), Movement->CurrentFloor.IsWalkableFloor())) { return false; }
+	Scene.Grapple->TickComponent(0.01f, LEVELTICK_All, nullptr);
+	const FVector UntriggeredPosition = Standing + FVector(400, 0, 200);
+	Scene.Character->SetActorLocation(UntriggeredPosition);
+	TestFalse(TEXT("Direct acknowledgment without pending retry rejected"), Scene.Grapple->AcknowledgeFallRetry());
+	TestEqual(TEXT("No unsolicited checkpoint teleport"), Scene.Character->GetActorLocation(), UntriggeredPosition);
+	Movement->SetMovementMode(MOVE_Falling);
+	Scene.Character->SetActorLocation(Standing - FVector(0, 0, 1600));
+	Scene.Grapple->TickComponent(0.01f, LEVELTICK_All, nullptr);
+	TestTrue(TEXT("Automatic recovery returns to checkpoint"), Scene.Character->GetActorLocation().Equals(Standing, 5));
+	TestFalse(TEXT("No pending acknowledgment in automatic mode"), Scene.Grapple->IsAwaitingFallRetry());
+	return true;
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FSonHatRMBLMBSeparationTest, "SonHat.Grapple.Feel.FixedRMBAndIntentionalLMB",
 	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 bool FSonHatRMBLMBSeparationTest::RunTest(const FString& Parameters)
