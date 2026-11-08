@@ -28,18 +28,21 @@ The central design constraint was **keeping gameplay state authoritative**: a si
 | Evidence | Status | Limit |
 |---|---|---|
 | C++ systems and native automation test definitions | Present in the `integration/son-hat` source tree | Source inspection alone does not prove runtime behavior |
-| Unreal Editor build and **55/55** SON HAT tests | **Historically reported** on 18 October 2026 in [`SonHatRescueSetup.md`](Source/UEIntroProject_1/SonHatRescueSetup.md) | These results were **not re-run** in the 2 November 2026 cloud audit; original test logs are local/ignored |
-| `Win64_Development_RescueFix2` | Documented in [`SUBMISSION_HANDOFF.md`](SUBMISSION_HANDOFF.md) as the human-tested playable fallback | The package is **not published here** and was not independently tested in the latest audit |
-| Clean GitHub clone builds and plays the complete final city | **Not established** | Some World Partition external actors and licensed environment assets are absent from the integration branch |
+| Unreal Editor C++ build | **Passed** on the portfolio snapshot machine (UE 5.7) | Requires local Epic toolchain |
+| SON HAT automation (`RunTests SonHat`) | **57/57 passed** before November 2026 map edits (local); **not re-run** after Phase 2b/2d map promotion | Re-run in Editor after pulling this branch |
+| Manual Phase 2d smoke test (promoted to this branch) | **User confirmed** — Roof A spawn/walk, grapple, visual cleanup, `building_3`, beacon, replay | No published capture or packaged build |
+| `Win64_Development_RescueFix2` | Earlier handoff package per [`SUBMISSION_HANDOFF.md`](SUBMISSION_HANDOFF.md) | Not this portfolio snapshot |
+| Clean clone → full playable jam city | **No** | World Partition `__ExternalActors__/Jam` and third-party environment packs are local-only |
 | Final game jam completion | **Not achieved** | This is a technical case study, not a completed jam entry |
 
 ## Repository layout and reproducibility
 
-- [`integration/son-hat`](https://github.com/Kaan081/supper-ready-civil-game-jam-2026/tree/integration/son-hat) contains the frozen gameplay implementation and the `L_SonHat_CityFinal` map definition.
-- `main` is an **earlier starter-project snapshot**, not the final gameplay implementation. Browse the integration branch when assessing the C++ work.
-- The Unreal project targets **UE 5.7** and uses **Git LFS** for Unreal binary assets.
-- The integration snapshot intentionally does **not** include all `Content/__ExternalActors__/Jam` files or third-party `Content/Fab`, `Content/ModularBuildingSet` and `Content/GrassLandscape` content. A clean clone must **not** be advertised as a turnkey playable build.
-- Environment packs must only be obtained and used under their applicable licenses. **Do not copy marketplace/Fab assets from another installation into a public repository.** An asset-safe, reproducible portfolio branch remains future work.
+- **Default play map (portfolio snapshot):** `/Game/Jam/A/Maps/L_SonHat_CityFinal` — four-beacon rescue integration over `/Game/Jam/B/Maps/L_City`.
+- **November 2026 map snapshot (this branch):** Phase 2b rescue spawn on Roof A `(4570, -5570, 1400)`; Phase 2d `L_City` cleanup (hide non-essential BasicShape/GA debug meshes, collision preserved). Locally, `building_3` World Partition data was aligned to the art pin (624 external actor files, **434 stale MAIN-only cells removed** — not stored in git).
+- [`integration/son-hat`](https://github.com/Kaan081/supper-ready-civil-game-jam-2026/tree/integration/son-hat) is the merge target for gameplay integration; `main` is an earlier starter snapshot.
+- **UE 5.7** · **Git LFS** for tracked Unreal binaries (`Content/Jam/…` only — **58** Jam assets tracked; **zero** `__ExternalActors__/Jam` paths in git).
+- **Not redistributable in this repo:** `Content/Fab`, `Content/ModularBuildingSet`, `Content/GrassLandscape`, and the bulk of `Content/__ExternalActors__/Jam`. A fresh clone **cannot** reproduce the full jam city without your own licensed/mirrored content; it **can** still be used to review C++, run automation against test maps, and open the integration map if you supply missing environment data locally.
+- **Do not** commit marketplace/Fab assets to a public remote. Obtain packs under their licenses and merge locally only.
 
 For technical review, start with the C++ files linked above and the following engineering notes:
 
