@@ -39,7 +39,7 @@ The central design constraint was **keeping gameplay state authoritative**: a si
 
 - **Default play map (portfolio snapshot):** `/Game/Jam/A/Maps/L_SonHat_CityFinal` — four-beacon rescue integration over `/Game/Jam/B/Maps/L_City`.
 - **November 2026 map snapshot (this branch):** Phase 2b rescue spawn on Roof A `(4570, -5570, 1400)`; Phase 2d `L_City` cleanup (hide non-essential BasicShape/GA debug meshes, collision preserved). Locally, `building_3` World Partition data was aligned to the art pin (624 external actor files, **434 stale MAIN-only cells removed** — not stored in git).
-- [`integration/son-hat`](https://github.com/Kaan081/supper-ready-civil-game-jam-2026/tree/integration/son-hat) is the merge target for gameplay integration; `main` is an earlier starter snapshot.
+- [`integration/son-hat`](https://github.com/kaanbartubozkurt/supper-ready-civil-game-jam-2026/tree/integration/son-hat) is the merge target for gameplay integration; `main` is an earlier starter snapshot.
 - **UE 5.7** · **Git LFS** for tracked Unreal binaries (`Content/Jam/…` only — **58** Jam assets tracked; **zero** `__ExternalActors__/Jam` paths in git).
 - **Not redistributable in this repo:** `Content/Fab`, `Content/ModularBuildingSet`, `Content/GrassLandscape`, and the bulk of `Content/__ExternalActors__/Jam`. A fresh clone **cannot** reproduce the full jam city without your own licensed/mirrored content; it **can** still be used to review C++, run automation against test maps, and open the integration map if you supply missing environment data locally.
 - **Do not** commit marketplace/Fab assets to a public remote. Obtain packs under their licenses and merge locally only.
